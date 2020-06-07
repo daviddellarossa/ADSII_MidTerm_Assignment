@@ -3,11 +3,12 @@
 #include <random>
 #include <algorithm>
 #include <sstream>
+#include "hashtable.h"
 
 #define MAX_LENGTH (trunc(log10(MAX_VALUE)) + 1)
 #define MIN_VALUE 0
-#define MAX_VALUE 50000
-#define MATRIX_SIZE 10000
+#define MAX_VALUE 500000000
+#define MATRIX_SIZE 3000
 
 int* createMatrix(size_t n){
     auto m = new int[n * n];
@@ -105,16 +106,42 @@ std::pair<int, int> proposal3(int* matrix, size_t n, int g){
     return std::make_pair(rowIndex, colIndex);
 }
 
+std::pair<int, int> proposal4(Hashtable& ht, unsigned int g){
+    return ht.find(g);
+}
+
+Hashtable createHashtable(){
+    Hashtable ht(MATRIX_SIZE);
+    return ht;
+}
+
+void populateHashtable(Hashtable& ht){
+    std::default_random_engine ran(4);
+    std::uniform_int_distribution<>{MIN_VALUE, MAX_VALUE}(ran);
+    for(int i = 0; i < MATRIX_SIZE; i++){
+        for(int j = 0; j < MATRIX_SIZE; j++) {
+            unsigned int newVal = -1;
+            do {
+                newVal = std::uniform_int_distribution<>{MIN_VALUE, MAX_VALUE}(ran);
+
+            } while (ht.find(newVal).first != -1 && ht.find(newVal).second != -1);
+//            std::cout << newVal << ", ";
+            ht.insert(newVal, i, j);
+        }
+    }
+//    std::cout << std::endl;
+}
+
 
 int main() {
 
     auto a = tenPow(0);
 
     const size_t matrixSize = MATRIX_SIZE;
-    auto matrix = createMatrix(matrixSize);
+//    auto matrix = createMatrix(matrixSize);
     try{
-        populateMatrix(matrix, matrixSize);
-        const int searchForValue = 49999;
+//        populateMatrix(matrix, matrixSize);
+        const int searchForValue = 1272;
         std::cout << "Searching for element " << searchForValue << " ... " << std::endl;
 
 //        auto pair1 = proposal1(matrix, matrixSize, searchForValue);
@@ -126,13 +153,22 @@ int main() {
 //        std::cout << printMatrix(matrix, matrixSize) << std::endl;
 //        std::cout << "Found at (" << pair2.first << ", " << pair2.second << ")" << std::endl;
 
-        auto pair3 = proposal3(matrix, matrixSize, searchForValue);
-//        std::cout << printMatrix(matrix, matrixSize) << std::endl;
-        std::cout << "Found at (" << pair3.first << ", " << pair3.second << ")" << std::endl;
+//        auto pair3 = proposal3(matrix, matrixSize, searchForValue);
+////        std::cout << printMatrix(matrix, matrixSize) << std::endl;
+//        std::cout << "Found at (" << pair3.first << ", " << pair3.second << ")" << std::endl;
 
+
+        auto ht = createHashtable();
+        populateHashtable(ht);
+//        std::cout << ht.toString() << std::endl;
+//        std::cout << ht.toMatrixString() << std::endl;
+
+
+        auto pair4 = proposal4(ht, searchForValue);
+        std::cout << "Found at (" << pair4.first << ", " << pair4.second << ")" << std::endl;
     }catch(std::exception& ex){
         std::cout << ex.what() << std::endl;
     }
-    destroyMatrix(matrix);
+//    destroyMatrix(matrix);
     return 0;
 }
