@@ -10,22 +10,7 @@
 #include <memory>
 #include <string>
 #include <sstream>
-
-template<typename T>
-class Nullable{
-public:
-    Nullable() : m_IsNull{true}{}
-    Nullable(T value): m_IsNull{false}, m_Value{value}{}
-    ~Nullable() = default;
-    bool isNull() const{ return m_IsNull; }
-    T value() const { return m_Value; }
-    void value(T value) { m_Value = value; m_IsNull = false; }
-    void setNull() { m_IsNull = true; }
-private:
-    bool m_IsNull;
-    T m_Value;
-
-};
+#include "constants.h"
 
 class HashtableItem{
 public:
@@ -77,7 +62,6 @@ public:
     double loadFactor();
 
 private:
-//    void insert(std::shared_ptr<HashtableItem[]> buckets, size_t size, const Hashtable& element);
     unsigned int hash(unsigned int);
     unsigned int hash(unsigned int, unsigned int);
 

@@ -4,11 +4,9 @@
 #include <algorithm>
 #include <sstream>
 #include "hashtable.h"
+#include "common.h"
+#include "constants.h"
 
-#define MAX_LENGTH (trunc(log10(MAX_VALUE)) + 1)
-#define MIN_VALUE 0
-#define MAX_VALUE 500000000
-#define MATRIX_SIZE 3000
 
 int* createMatrix(size_t n){
     auto m = new int[n * n];
@@ -36,78 +34,6 @@ std::string printMatrix(const int* matrix, size_t n){
         ss << "|" << std::endl;
     }
     return ss.str();
-}
-
-
-std::pair<int, int> proposal1(const int* matrix, const size_t n, const int g){
-    for(auto i = 0; i < n; ++i){ //row
-        for(auto j = 0; j < n; ++j){ //column
-            if(matrix[i*n + j] == g){
-                return std::make_pair(i, j);
-            }
-        }
-    }
-    return std::make_pair(-1, -1);
-}
-
-int binary_search(int* array, size_t n, int g){
-    int min=0, max = n;
-    while(min <= max){
-        auto mid = (max + min) / 2;
-        if(array[mid] == g) return mid;
-        else if(array[mid] > g) max = mid -1;
-        else min = mid + 1;
-    }
-    return -1;
-}
-
-std::pair<int, int> proposal2(int* matrix, size_t n, int g){
-    for(auto i = 0; i < n; ++i){
-        radixSort(&matrix[i*n], n, MAX_LENGTH);
-        auto bSearchResult = binary_search(&matrix[i*n], n, g);
-        if(bSearchResult != -1){
-            return std::make_pair(i, bSearchResult);
-        }
-    }
-    return std::make_pair(-1, -1);
-}
-
-int binary_search_row(const int* array, size_t n, int g){
-    int min = 0, max = n;
-    while(min <= max){
-        int mid = (max + min) / 2;
-        /** If first element of the row is greater than g, then reset max and continue */
-        if(array[mid*n] > g){
-            max = mid - 1;
-            continue;
-        }else{ /** If first element of the row is less than g */
-            /** If last element of the row is goe g, I found the row */
-            if(array[mid*n + (n-1)] >= g){
-                /** Return the row index */
-                return mid;
-            }else{
-                /** Reset min and continue */
-                min = mid+1;
-            }
-        }
-    }
-    /** Row not found */
-    return -1;
-}
-
-std::pair<int, int> proposal3(int* matrix, size_t n, int g){
-//    std::cout << printMatrix(matrix, n);
-    radixSort(matrix, n * n, MAX_LENGTH);
-//    std::cout << printMatrix(matrix, n);
-    auto rowIndex = binary_search_row(matrix, n, g);
-    if(rowIndex == -1) return std::make_pair(-1, -1);
-    auto colIndex = binary_search(&matrix[rowIndex*n], n, g);
-    if(colIndex == -1) return std::make_pair(-1, -1);
-    return std::make_pair(rowIndex, colIndex);
-}
-
-std::pair<int, int> proposal4(Hashtable& ht, unsigned int g){
-    return ht.find(g);
 }
 
 Hashtable createHashtable(){
@@ -141,8 +67,8 @@ int main() {
 //    auto matrix = createMatrix(matrixSize);
     try{
 //        populateMatrix(matrix, matrixSize);
-        const int searchForValue = 1272;
-        std::cout << "Searching for element " << searchForValue << " ... " << std::endl;
+
+    std::cout << "Searching for element " << SEARCH_VALUE << " ... " << std::endl;
 
 //        auto pair1 = proposal1(matrix, matrixSize, searchForValue);
 //        std::cout << printMatrix(matrix, matrixSize) << std::endl;
@@ -164,7 +90,7 @@ int main() {
 //        std::cout << ht.toMatrixString() << std::endl;
 
 
-        auto pair4 = proposal4(ht, searchForValue);
+        auto pair4 = proposal4(ht, SEARCH_VALUE);
         std::cout << "Found at (" << pair4.first << ", " << pair4.second << ")" << std::endl;
     }catch(std::exception& ex){
         std::cout << ex.what() << std::endl;

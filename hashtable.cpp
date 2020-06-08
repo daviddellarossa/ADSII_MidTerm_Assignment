@@ -57,7 +57,6 @@ void Hashtable::extend() {
                 }
         );
 
-
     } catch(...){
         delete [] newBuckets;
         throw;
@@ -124,16 +123,6 @@ std::string Hashtable::toMatrixString() {
 }
 
 double Hashtable::loadFactor() {
-//    auto itemCount = 0;
-//    for(auto i = 0; i < m_Size; ++i){
-//        if(!m_Buckets[i].isNull()){
-//            ++itemCount;
-//        }
-//    }
-
-//    auto itemCount = std::count_if(m_Buckets, m_Buckets + this->m_Size, [](const HashtableItem& x){
-//        return !x.isNull();
-//    });
     return m_itemCount / double(m_Size);
 }
 
