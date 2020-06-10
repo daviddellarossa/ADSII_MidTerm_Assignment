@@ -43,9 +43,10 @@ void Hashtable::extend() {
     if(loadFactor() < m_extendThreshold)
         return;
 
-    size_t newSize = m_rowSize * m_extendFactor;
+    size_t newRowSize = m_rowSize * m_extendFactor;
+    size_t newSize = newRowSize * newRowSize;
     std::cout << "Extending hashtable " << std::endl;
-    HashtableItem* newBuckets = new HashtableItem[newSize * newSize];
+    HashtableItem* newBuckets = new HashtableItem[newSize];
 
     try{
         std::for_each(
@@ -53,7 +54,7 @@ void Hashtable::extend() {
                 m_Buckets + m_Size,
                 [&](HashtableItem& x){
                     if(x.isNull()) return;
-                    insert(newBuckets, newSize * newSize, x.getValue(), x.getRowIndex(), x.getColIndex());
+                    insert(newBuckets, newSize, x.getValue(), x.getRowIndex(), x.getColIndex());
                 }
         );
 
@@ -66,8 +67,8 @@ void Hashtable::extend() {
     delete[] newBuckets;
 
     //reset m
-    m_rowSize = newSize;
-    m_Size = m_rowSize * m_rowSize;
+    m_rowSize = newRowSize;
+    m_Size = newSize;
 }
 
 void Hashtable::insert(
@@ -80,7 +81,7 @@ void Hashtable::insert(
     unsigned int hashValue = hash(_Size, _value);
     unsigned int counter = 0;
     //find the position in the array where to store key
-    while( counter < m_Size && _buckets[hash(_Size, (hashValue + counter))].isNull() == false ){
+    while( counter < _Size && _buckets[hash(_Size, (hashValue + counter))].isNull() == false ){
 //        std::cout << "collision at " << hash(m_Size, (hashValue + counter)) << std::endl;
         counter ++;
     }

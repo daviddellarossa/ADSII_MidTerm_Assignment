@@ -70,8 +70,8 @@ private:
     size_t m_Size{0};
     size_t m_rowSize{0};
     size_t m_itemCount{0};
-    const double m_extendThreshold{0.5};
-    const double m_extendFactor{1.5};
+    static constexpr double m_extendThreshold{0.5};
+    static constexpr double m_extendFactor{1.5};
 };
 
 
