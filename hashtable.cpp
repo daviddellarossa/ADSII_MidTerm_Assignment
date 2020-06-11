@@ -28,10 +28,10 @@ std::pair<unsigned int, unsigned int> Hashtable::find(unsigned int _value) {
         return std::make_pair(m_Buckets[hashValue].getRowIndex(), m_Buckets[hashValue].getColIndex());
 
     int counter = 0;
-    while(counter < m_rowSize && m_Buckets[hash(hashValue + counter)].getValue() != _value){
+    while(counter < m_Size && m_Buckets[hash(hashValue + counter)].getValue() != _value){
         counter ++;
     }
-    if(counter == m_rowSize){
+    if(counter == m_Size){
         return std::make_pair(-1, -1);
     }else{
         auto item = m_Buckets[hash(hashValue + counter)];
