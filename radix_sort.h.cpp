@@ -9,7 +9,7 @@ unsigned int tenPow(unsigned int pow){
     return 1;
 }
 
-void countingSortbyDigit(int* array, size_t n, int k){
+void countingSortbyDigit(unsigned long* array, size_t n, unsigned int k){
     std::vector<int> vecC(10, 0);
     unsigned int divisor = tenPow(k) ;
 
@@ -21,7 +21,7 @@ void countingSortbyDigit(int* array, size_t n, int k){
         vecC[i] += vecC[i-1];
     }
 
-    std::vector<int> vecB(n, 0);
+    std::vector<long> vecB(n, 0);
     for(int i = n - 1; i >= 0; i--){
         auto value = (unsigned(array[i] / divisor)) % 10;
         vecB[vecC[value]-1] = array[i];
@@ -31,7 +31,7 @@ void countingSortbyDigit(int* array, size_t n, int k){
     std::copy(vecB.cbegin(), vecB.cend(), array);
 }
 
-void radixSort(int* vecA, size_t n, int numOfDigits){
+void radixSort(unsigned long* vecA, size_t n, unsigned int numOfDigits){
     --numOfDigits;
     if(numOfDigits > 0){
         radixSort(vecA, n, numOfDigits);

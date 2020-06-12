@@ -11,7 +11,7 @@
 #include "hashtable.h"
 
 
-std::pair<int, int> proposal1(const int* matrix, const size_t n, const int g){
+std::pair<int, int> proposal1(const unsigned long* matrix, size_t n, unsigned long g){
     for(auto i = 0; i < n; ++i){ //row
         for(auto j = 0; j < n; ++j){ //column
             if(matrix[i*n + j] == g){
@@ -26,8 +26,8 @@ std::pair<int, int> proposal1(const int* matrix, const size_t n, const int g){
 
 
 
-int binary_search(int* array, size_t n, int g){
-    int min=0, max = n;
+int binary_search(unsigned long* array, size_t n, unsigned long g){
+    unsigned long min=0, max = n-1;
     while(min <= max){
         auto mid = (max + min) / 2;
         if(array[mid] == g) return mid;
@@ -37,7 +37,7 @@ int binary_search(int* array, size_t n, int g){
     return -1;
 }
 
-std::pair<int, int> proposal2(int* matrix, size_t n, int g){
+std::pair<int, int> proposal2(unsigned long* matrix, size_t n, unsigned long g){
     for(auto i = 0; i < n; ++i){
         radixSort(&matrix[i*n], n, MAX_LENGTH);
         auto bSearchResult = binary_search(&matrix[i*n], n, g);
@@ -48,10 +48,10 @@ std::pair<int, int> proposal2(int* matrix, size_t n, int g){
     return std::make_pair(-1, -1);
 }
 
-int binary_search_row(const int* array, size_t n, int g){
-    int min = 0, max = n;
+unsigned long binary_search_row(const unsigned long* array, size_t n, unsigned long g){
+    unsigned long min = 0, max = n;
     while(min <= max){
-        int mid = (max + min) / 2;
+        unsigned long mid = (max + min) / 2;
         /** If first element of the row is greater than g, then reset max and continue */
         if(array[mid*n] > g){
             max = mid - 1;
@@ -71,7 +71,7 @@ int binary_search_row(const int* array, size_t n, int g){
     return -1;
 }
 
-std::pair<int, int> proposal3(int* matrix, size_t n, int g){
+std::pair<int, int> proposal3(unsigned long* matrix, size_t n, unsigned long g){
 //    std::cout << printMatrix(matrix, n);
     radixSort(matrix, n * n, MAX_LENGTH);
 //    std::cout << printMatrix(matrix, n);

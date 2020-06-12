@@ -6,12 +6,13 @@
 #define MID_TERM_ASSIGNMENT_CONSTANTS_H
 #include <cmath>
 
-#define MIN_VALUE 0
-#define MAX_VALUE 5000
-#define MAX_LENGTH (trunc(log10(MAX_VALUE)) + 1)
+//#define MIN_VALUE 0
+//#define MAX_VALUE 1000
+#define MATRIX_SIZE 10000
+#define MAX_LENGTH (trunc(log10(MATRIX_SIZE*MATRIX_SIZE)) + 1)
 
-#define MATRIX_SIZE 30
 
-#define SEARCH_VALUE 1206
+
+#define SEARCH_VALUE 9
 
 #endif //MID_TERM_ASSIGNMENT_CONSTANTS_H

@@ -8,11 +8,11 @@
 #include <iostream>
 #include "hashtable.h"
 
-std::pair<int, int> proposal1(const int* matrix, const size_t n, const int g);
+std::pair<int, int> proposal1(const unsigned long* matrix, size_t n, unsigned long g);
 
-std::pair<int, int> proposal2(int* matrix, size_t n, int g);
+std::pair<int, int> proposal2(unsigned long* matrix, size_t n, unsigned long g);
 
-std::pair<int, int> proposal3(int* matrix, size_t n, int g);
+std::pair<int, int> proposal3(unsigned long* matrix, size_t n, unsigned long g);
 
 std::pair<int, int> proposal4(Hashtable& ht, unsigned int g);
 

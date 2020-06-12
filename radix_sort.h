@@ -9,9 +9,9 @@
 
 unsigned int tenPow(unsigned int pow);
 
-void countingSortbyDigit(int* array, size_t n, int k);
+void countingSortbyDigit(unsigned long* array, size_t n, unsigned int k);
 
-void radixSort(int* vecA, size_t n, int numOfDigits);
+void radixSort(unsigned long* vecA, size_t n, unsigned int numOfDigits);
 
 
 #endif //MID_TERM_ASSIGNMENT_RADIX_SORT_H
