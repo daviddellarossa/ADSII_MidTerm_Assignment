@@ -9,12 +9,13 @@
 #include <iostream>
 #include "radix_sort.h"
 #include "hashtable.h"
+#include "algorithm"
 
 
-std::pair<int, int> proposal1(const unsigned long* matrix, size_t n, unsigned long g){
-    for(auto i = 0; i < n; ++i){ //row
-        for(auto j = 0; j < n; ++j){ //column
-            if(matrix[i*n + j] == g){
+std::pair<int, int> proposal1(const std::vector<unsigned long>& matrix, unsigned long g){
+    for(auto i = 0; i < MATRIX_SIZE; ++i){ //row
+        for(auto j = 0; j < MATRIX_SIZE; ++j){ //column
+            if(matrix[i*MATRIX_SIZE + j] == g){
                 return std::make_pair(i, j);
             }
         }
@@ -24,41 +25,31 @@ std::pair<int, int> proposal1(const unsigned long* matrix, size_t n, unsigned lo
 
 #endif //MID_TERM_ASSIGNMENT_GOLDIE_H
 
-
-
-int binary_search(unsigned long* array, size_t n, unsigned long g){
-    unsigned long min=0, max = n-1;
-    while(min <= max){
-        auto mid = (max + min) / 2;
-        if(array[mid] == g) return mid;
-        else if(array[mid] > g) max = mid -1;
-        else min = mid + 1;
-    }
-    return -1;
-}
-
-std::pair<int, int> proposal2(unsigned long* matrix, size_t n, unsigned long g){
-    for(auto i = 0; i < n; ++i){
-        radixSort(&matrix[i*n], n, MAX_LENGTH);
-        auto bSearchResult = binary_search(&matrix[i*n], n, g);
-        if(bSearchResult != -1){
-            return std::make_pair(i, bSearchResult);
+std::pair<int, int> proposal2(std::vector<unsigned long>& matrix, unsigned long g){
+    for(auto i = 0; i < MATRIX_SIZE; ++i){
+        auto begin = matrix.begin() +(i*MATRIX_SIZE);
+        auto end = begin + MATRIX_SIZE;
+        radixSort(begin, end, MAX_LENGTH);
+//        std::sort(begin, end);
+        auto bSearchResult = std::lower_bound(begin, end, g);
+        if(*bSearchResult == g){
+            return std::make_pair(i, bSearchResult-begin);
         }
     }
     return std::make_pair(-1, -1);
 }
 
-unsigned long binary_search_row(const unsigned long* array, size_t n, unsigned long g){
-    unsigned long min = 0, max = n;
+unsigned long binary_search_row(std::vector<unsigned long>::iterator begin, std::vector<unsigned long>::iterator end, unsigned long g){
+    unsigned long min = 0, max = MATRIX_SIZE;
     while(min <= max){
         unsigned long mid = (max + min) / 2;
         /** If first element of the row is greater than g, then reset max and continue */
-        if(array[mid*n] > g){
+        if(*(begin + mid*MATRIX_SIZE) > g){
             max = mid - 1;
             continue;
         }else{ /** If first element of the row is less than g */
             /** If last element of the row is goe g, I found the row */
-            if(array[mid*n + (n-1)] >= g){
+            if(*(begin + mid*MATRIX_SIZE + (MATRIX_SIZE-1)) >= g){
                 /** Return the row index */
                 return mid;
             }else{
@@ -71,15 +62,18 @@ unsigned long binary_search_row(const unsigned long* array, size_t n, unsigned l
     return -1;
 }
 
-std::pair<int, int> proposal3(unsigned long* matrix, size_t n, unsigned long g){
-//    std::cout << printMatrix(matrix, n);
-    radixSort(matrix, n * n, MAX_LENGTH);
-//    std::cout << printMatrix(matrix, n);
-    auto rowIndex = binary_search_row(matrix, n, g);
+std::pair<int, int> proposal3(std::vector<unsigned long>& matrix, unsigned long g){
+    radixSort(matrix.begin(), matrix.end(), MAX_LENGTH);
+//    std::sort(matrix.begin(), matrix.end());
+    auto rowIndex = binary_search_row(matrix.begin(), matrix.end(), g);
     if(rowIndex == -1) return std::make_pair(-1, -1);
-    auto colIndex = binary_search(&matrix[rowIndex*n], n, g);
-    if(colIndex == -1) return std::make_pair(-1, -1);
-    return std::make_pair(rowIndex, colIndex);
+    auto begin = matrix.begin()+(rowIndex*MATRIX_SIZE);
+    auto end = begin + MATRIX_SIZE;
+    auto itemIndex = std::lower_bound(begin, end, g);
+    if(*itemIndex == g){
+        return std::make_pair(rowIndex, (itemIndex-begin)%MATRIX_SIZE);
+    }
+    return std::make_pair(-1, -1);
 }
 
 std::pair<int, int> proposal4(Hashtable& ht, unsigned int g){

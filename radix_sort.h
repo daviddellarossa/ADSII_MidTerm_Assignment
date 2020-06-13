@@ -9,9 +9,9 @@
 
 unsigned int tenPow(unsigned int pow);
 
-void countingSortbyDigit(unsigned long* array, size_t n, unsigned int k);
+void countingSortbyDigit(std::vector<unsigned long>::iterator begin, std::vector<unsigned long>::iterator end, unsigned int k);
 
-void radixSort(unsigned long* vecA, size_t n, unsigned int numOfDigits);
+void radixSort(std::vector<unsigned long>::iterator begin, std::vector<unsigned long>::iterator end, unsigned int numOfDigits);
 
 
 #endif //MID_TERM_ASSIGNMENT_RADIX_SORT_H
