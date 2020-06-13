@@ -46,14 +46,14 @@ int main() {
         return counter--;
     });
 
-    Hashtable ht(MATRIX_SIZE, 1, 0, MATRIX_SIZE);
+    Hashtable ht(1, 0, MATRIX_SIZE);
     unsigned int counter = MATRIX_SIZE*MATRIX_SIZE - 1;
     for(int i = 0; i < MATRIX_SIZE; i++){
         for(int j = 0; j < MATRIX_SIZE; j++) {
             ht.insert(counter--, i, j);
         }
     }
-    std::cout << "Size of ht:" << ht.m_buckets.size() << std::endl;
+//    std::cout << "Size of ht:" << ht.m_buckets.size() << std::endl;
 
     bool loop = true;
     while (loop) {
