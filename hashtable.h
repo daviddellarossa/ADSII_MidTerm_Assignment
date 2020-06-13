@@ -11,13 +11,17 @@
 #include <string>
 #include <sstream>
 #include "constants.h"
+#include "vector"
+#include "iostream"
 
 class HashtableItem{
 public:
     HashtableItem() : m_isNull{true}{}
     HashtableItem(unsigned int value, unsigned int rowIndex, unsigned int colIndex):
         m_isNull{false}, m_value{value}, m_rowIndex{rowIndex}, m_colIndex{colIndex}{}
-    ~HashtableItem() = default;
+    ~HashtableItem(){
+//        std::cout << "hti desctructor" << std::endl;
+    }
     bool isNull() const{ return m_isNull; }
 
     void setNull() { m_isNull = true; }
@@ -41,11 +45,15 @@ public:
         return m_colIndex;
     }
 
+//    std::unique_ptr<HashtableItem> prev = nullptr;
+    std::shared_ptr<HashtableItem> next = nullptr;
+
 private:
     bool m_isNull;
     unsigned int m_value;
     unsigned int m_rowIndex;
     unsigned int m_colIndex;
+
 
 };
 
@@ -53,25 +61,24 @@ private:
 class Hashtable {
 public:
     Hashtable(const size_t _rowSize);
+    Hashtable(const size_t _rowSize, unsigned int a, unsigned int b, unsigned long mod);
     ~Hashtable();
     std::pair<unsigned int, unsigned int> find(unsigned int _value);
-    void extend();
     void insert(unsigned int _value, unsigned int _rowIdx, unsigned int _colIdx);
-    std::string toString();
-    std::string toMatrixString();
+
     double loadFactor();
 
+    std::vector<std::shared_ptr<HashtableItem>> m_buckets;
 private:
     unsigned int hash(unsigned int);
-    unsigned int hash(unsigned int, unsigned int);
 
-    void insert(HashtableItem* buckets, size_t size, unsigned int _value, unsigned int _rowIdx, unsigned int _colIdx);
-    HashtableItem* m_Buckets;
+
     size_t m_Size{0};
     size_t m_rowSize{0};
     size_t m_itemCount{0};
-    static constexpr double m_extendThreshold{0.5};
-    static constexpr double m_extendFactor{1.5};
+    unsigned int m_a = 1;
+    unsigned int m_b = 0;
+    unsigned long m_mod;
 };
 
 

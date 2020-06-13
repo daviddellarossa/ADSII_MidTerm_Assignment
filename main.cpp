@@ -28,13 +28,11 @@ void process(std::vector<unsigned long>& matrix, Hashtable& ht, unsigned long va
     try {
 
         auto start = std::chrono::high_resolution_clock::now();
-        auto pair = proposal3(matrix, value);
-//        auto pair = proposal4(ht, value);
+//         auto pair = proposal3(matrix, value);
+       auto pair = proposal4(ht, value);
         auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
         std::cout << "n: " << MATRIX_SIZE << ", Execution time(ms): " << duration.count() << std::endl;
-//        std::cout << printMatrix(matrix, MATRIX_SIZE) << std::endl;
-        //std::cout << ht.toMatrixString() << std::endl;
         std::cout << "Found at (" << pair.first << ", " << pair.second << ")" << std::endl;
     } catch (const std::exception& e) {
         std::cout << "Exception: " << e.what() << std::endl;
@@ -48,13 +46,14 @@ int main() {
         return counter--;
     });
 
-    Hashtable ht(MATRIX_SIZE);
-//    unsigned int counter = MATRIX_SIZE*MATRIX_SIZE - 1;
-//    for(int i = 0; i < MATRIX_SIZE; i++){
-//        for(int j = 0; j < MATRIX_SIZE; j++) {
-//            ht.insert(counter--, i, j);
-//        }
-//    }
+    Hashtable ht(MATRIX_SIZE, 1, 0, MATRIX_SIZE);
+    unsigned int counter = MATRIX_SIZE*MATRIX_SIZE - 1;
+    for(int i = 0; i < MATRIX_SIZE; i++){
+        for(int j = 0; j < MATRIX_SIZE; j++) {
+            ht.insert(counter--, i, j);
+        }
+    }
+    std::cout << "Size of ht:" << ht.m_buckets.size() << std::endl;
 
     bool loop = true;
     while (loop) {

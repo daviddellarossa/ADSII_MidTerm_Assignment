@@ -7,7 +7,7 @@
 #include <cmath>
 
 //#define MIN_VALUE 0
-//#define MAX_VALUE 100000000
+//#define MAX_VALUE 9
 #define MATRIX_SIZE 10000
 #define MAX_LENGTH (trunc(log10(MATRIX_SIZE*MATRIX_SIZE)) + 1)
 

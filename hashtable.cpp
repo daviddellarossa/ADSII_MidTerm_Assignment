@@ -6,130 +6,49 @@
 #include <algorithm>
 #include <iostream>
 
-Hashtable::Hashtable(size_t _rowSize) : m_rowSize{_rowSize}, m_Size{_rowSize * _rowSize} {
-    m_Buckets = new HashtableItem[size_t(m_Size * m_extendFactor)];
+Hashtable::Hashtable(size_t _rowSize) :
+        Hashtable::Hashtable(_rowSize, 1, 0, _rowSize * _rowSize) {
+
+}
+
+Hashtable::Hashtable(const size_t _rowSize, unsigned int a, unsigned int b, unsigned long mod) : m_rowSize{_rowSize}, m_Size{_rowSize*_rowSize}, m_a{a}, m_b{b}, m_mod{mod}{
+    m_buckets.resize(mod);
 }
 
 Hashtable::~Hashtable() {
-    delete [] m_Buckets;
+
 }
 
 void Hashtable::insert(unsigned int _value, unsigned int _rowIdx, unsigned int _colIdx) {
-    if(loadFactor() >= m_extendThreshold)
-        extend();
-    insert(m_Buckets, m_Size, _value, _rowIdx, _colIdx);
+    unsigned int hashValue = hash(_value);
+
+    std::shared_ptr<HashtableItem> newItem{new HashtableItem(_value, _rowIdx, _colIdx)};
+
+    if(m_buckets[hashValue] != nullptr){
+        newItem->next = m_buckets[hashValue];
+    }
+    m_buckets[hashValue] = newItem;
+
     m_itemCount++;
 }
 
 std::pair<unsigned int, unsigned int> Hashtable::find(unsigned int _value) {
     auto hashValue = hash(_value);
 
-    if(m_Buckets[hashValue].getValue() == _value)
-        return std::make_pair(m_Buckets[hashValue].getRowIndex(), m_Buckets[hashValue].getColIndex());
-
-    int counter = 0;
-    while(counter < m_Size && m_Buckets[hash(hashValue + counter)].getValue() != _value){
-        counter ++;
+    auto ptr = m_buckets[hashValue];
+    while(ptr != nullptr){
+        if(ptr->getValue() == _value)
+            return std::make_pair(ptr->getRowIndex(), ptr->getColIndex());
+        if(ptr = ptr->next);
     }
-    if(counter == m_Size){
-        return std::make_pair(-1, -1);
-    }else{
-        auto item = m_Buckets[hash(hashValue + counter)];
-        return std::make_pair(item.getRowIndex(), item.getColIndex());
-    }
-}
-
-void Hashtable::extend() {
-    if(loadFactor() < m_extendThreshold)
-        return;
-
-    size_t newRowSize = m_rowSize * m_extendFactor;
-    size_t newSize = newRowSize * newRowSize;
-    std::cout << "Extending hashtable " << std::endl;
-    HashtableItem* newBuckets = new HashtableItem[newSize];
-
-    try{
-        std::for_each(
-                m_Buckets,
-                m_Buckets + m_Size,
-                [&](HashtableItem& x){
-                    if(x.isNull()) return;
-                    insert(newBuckets, newSize, x.getValue(), x.getRowIndex(), x.getColIndex());
-                }
-        );
-
-    } catch(...){
-        delete [] newBuckets;
-        throw;
-    }
-    //swap buckets
-    std::swap(m_Buckets, newBuckets);
-    delete[] newBuckets;
-
-    //reset m
-    m_rowSize = newRowSize;
-    m_Size = newSize;
-}
-
-void Hashtable::insert(
-        HashtableItem* _buckets,
-        size_t _Size,
-        unsigned int _value,
-        unsigned int _rowIdx,
-        unsigned int _colIdx) {
-
-    unsigned int hashValue = hash(_Size, _value);
-    unsigned int counter = 0;
-    //find the position in the array where to store key
-    while( counter < _Size && _buckets[hash(_Size, (hashValue + counter))].isNull() == false ){
-//        std::cout << "collision at " << hash(m_Size, (hashValue + counter)) << std::endl;
-        counter ++;
-    }
-    _buckets[hash(_Size, (hashValue + counter))].set(_value, _rowIdx, _colIdx);
-}
-
-std::string Hashtable::toString() {
-    std::stringstream ss;
-
-    for (auto i = 0; i < m_rowSize; i++){
-        ss << "|";
-        for(auto j = 0; j < m_rowSize; j++){
-            ss << m_Buckets[i * m_rowSize + j].getValue() << ", ";
-        }
-        ss<< "|" << std::endl;
-    }
-
-    return ss.str();
-}
-
-std::string Hashtable::toMatrixString() {
-    std::stringstream ss;
-    int* matrix = new int[m_Size];
-    std::for_each(matrix, matrix + m_Size, [](auto& x){ x = -1; });
-
-    for(auto i = 0; i < m_Size; ++i){
-        if(!m_Buckets[i].isNull()){
-            matrix[m_Buckets[i].getRowIndex()*m_rowSize + m_Buckets[i].getColIndex()] = m_Buckets[i].getValue();
-        }
-    }
-    for(auto i = 0; i < m_rowSize; ++i){
-        ss << "|";
-        for(auto j = 0; j < m_rowSize; ++j){
-            ss << matrix[i*m_rowSize +j] << " ";
-        }
-        ss<< "|" << std::endl;
-    }
-    delete [] matrix;
-    return ss.str();
+    return std::make_pair(-1, -1);
 }
 
 double Hashtable::loadFactor() {
     return m_itemCount / double(m_Size);
 }
 
-unsigned int Hashtable::hash( unsigned int key){
-    return hash(m_Size, key);
+unsigned int Hashtable::hash(unsigned int key){
+    return (m_a*key+m_b) % (m_mod);
 }
-unsigned int Hashtable::hash(unsigned  int size, unsigned int key){
-    return key % (size);
-}
+
