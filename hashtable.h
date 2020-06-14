@@ -21,7 +21,6 @@ public:
         m_value{value}, m_rowIndex{rowIndex}, m_colIndex{colIndex}{}
     ~HashtableItem(){ }
 
-
     unsigned int getValue() const {
         return m_value;
     }
@@ -30,7 +29,6 @@ public:
         m_value = value;
         m_rowIndex = rowIndex;
         m_colIndex = colIndex;
-//        m_isNull = false;
     }
 
     unsigned int getRowIndex() const {
@@ -41,16 +39,12 @@ public:
         return m_colIndex;
     }
 
-//    std::unique_ptr<HashtableItem> prev = nullptr;
     std::shared_ptr<HashtableItem> next = nullptr;
 
 private:
-//    bool m_isNull;
     unsigned int m_value;
     unsigned int m_rowIndex;
     unsigned int m_colIndex;
-
-
 };
 
 

@@ -32,9 +32,6 @@ std::pair<int, int> proposal2(std::vector<unsigned long>& matrix, unsigned long 
         auto begin = matrix.begin() +(i*MATRIX_SIZE);
         auto end = begin + MATRIX_SIZE;
        radixSort(begin, end, MAX_LENGTH);
-//         mergeSort(begin, end);
-//        quicksort(begin, end);
-//        std::sort(begin, end);
         auto bSearchResult = std::lower_bound(begin, end, g);
         if(*bSearchResult == g){
             return std::make_pair(i, bSearchResult-begin);
@@ -68,9 +65,6 @@ unsigned long binary_search_row(std::vector<unsigned long>::iterator begin, std:
 
 std::pair<int, int> proposal3(std::vector<unsigned long>& matrix, unsigned long g){
     radixSort(matrix.begin(), matrix.end(), MAX_LENGTH);
-//  mergeSort(matrix.begin(), matrix.end());
-//  quicksort(matrix.begin(), matrix.end());
-//  std::sort(matrix.begin(), matrix.end());
     auto rowIndex = binary_search_row(matrix.begin(), matrix.end(), g);
     if(rowIndex == -1) return std::make_pair(-1, -1);
     auto begin = matrix.begin()+(rowIndex*MATRIX_SIZE);
