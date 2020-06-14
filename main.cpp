@@ -28,7 +28,7 @@ void process(std::vector<unsigned long>& matrix, Hashtable& ht, unsigned long va
     try {
 
         auto start = std::chrono::high_resolution_clock::now();
-         auto pair = proposal2(matrix, value);
+         auto pair = proposal3(matrix, value);
 //       auto pair = proposal4(ht, value);
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
