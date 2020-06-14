@@ -28,10 +28,10 @@ void process(std::vector<unsigned long>& matrix, Hashtable& ht, unsigned long va
     try {
 
         auto start = std::chrono::high_resolution_clock::now();
-//         auto pair = proposal3(matrix, value);
-       auto pair = proposal4(ht, value);
+         auto pair = proposal2(matrix, value);
+//       auto pair = proposal4(ht, value);
         auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
         std::cout << "n: " << MATRIX_SIZE << ", Execution time(ms): " << duration.count() << std::endl;
         std::cout << "Found at (" << pair.first << ", " << pair.second << ")" << std::endl;
     } catch (const std::exception& e) {
@@ -41,18 +41,22 @@ void process(std::vector<unsigned long>& matrix, Hashtable& ht, unsigned long va
 
 int main() {
     std::vector<unsigned long> matrix(MATRIX_SIZE * MATRIX_SIZE, 0);
-    std::generate(matrix.begin(), matrix.end(), []() {
-        static unsigned long counter = MATRIX_SIZE * MATRIX_SIZE - 1;
-        return counter--;
-    });
+//    std::generate(matrix.begin(), matrix.end(), []() {
+//        static unsigned long counter = MATRIX_SIZE * MATRIX_SIZE - 1;
+//        return counter--;
+//    });
+    unsigned long maxValue = 5* MATRIX_SIZE * MATRIX_SIZE;
+    std::default_random_engine ran(4);
+////    std::uniform_int_distribution<>{0, MATRIX_SIZE}(ran);
+//    std::generate(matrix.begin(), matrix.end(), [&ran, maxValue](){ return std::uniform_int_distribution<unsigned long>{0, maxValue}(ran); });
 
     Hashtable ht(1, 0, MATRIX_SIZE);
-    unsigned int counter = MATRIX_SIZE*MATRIX_SIZE - 1;
-    for(int i = 0; i < MATRIX_SIZE; i++){
-        for(int j = 0; j < MATRIX_SIZE; j++) {
-            ht.insert(counter--, i, j);
-        }
-    }
+//    unsigned int counter = MATRIX_SIZE*MATRIX_SIZE - 1;
+//    for(int i = 0; i < MATRIX_SIZE; i++){
+//        for(int j = 0; j < MATRIX_SIZE; j++) {
+//            ht.insert(counter--, i, j);
+//        }
+//    }
 //    std::cout << "Size of ht:" << ht.m_buckets.size() << std::endl;
 
     bool loop = true;
@@ -70,6 +74,11 @@ int main() {
         } catch (...) {
             continue;
         }
+
+
+        std::generate(matrix.begin(), matrix.end(), [&ran, maxValue](){ return std::uniform_int_distribution<unsigned long>{0, maxValue}(ran); });
+
+
         process(matrix, ht, searchValue);
     }
     return 0;
